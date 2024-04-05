@@ -1,5 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# Cache
+/pokemon-btb-ui/.angular/cache
+
 # Compiled output
 /dist
 /tmp
