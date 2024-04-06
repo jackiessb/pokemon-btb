@@ -1,3 +1,6 @@
+using PokeApiNet;
+using pokemon_btb_api.Clients;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,7 +8,25 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.CustomSchemaIds((type) => type.FullName);
+});
+builder.Services.AddLogging(logging => logging.AddConsole());
+builder.Services.AddCors(options =>
+{
+    // Will need to change this policy before I deploy this anywhere.
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin();
+        builder.AllowAnyMethod();
+        builder.AllowAnyHeader();
+    });
+});
+
+// Custom services
+builder.Services.AddSingleton<PokeApiClient>();
+builder.Services.AddSingleton<IPokemonClient, PokemonClient>();
 
 var app = builder.Build();
 
@@ -19,6 +40,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors();
 
 app.MapControllers();
 

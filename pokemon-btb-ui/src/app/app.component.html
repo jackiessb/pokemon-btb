@@ -1,3 +1,8 @@
-<div class="container">
-  This compiles
+<div class="flex main-display">
+  <ul class="list-group">
+    <app-team-slot *ngFor="let slot of slots" [pokemon]="slot"></app-team-slot>
+  </ul>
+  <div class="search">
+    <input type="search" class="pokemon-query" id="pokemon-query" placeholder="Search for a Pokemon here!">
+  </div>
 </div>
