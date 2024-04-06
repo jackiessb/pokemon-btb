@@ -1,6 +1,6 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { PokemonQueryService } from './services/pokemon-query.service';
+import { Component } from '@angular/core';
 import { Pokemon } from 'pokenode-ts';
+import { PokemonService } from './services/pokemon.service';
 
 @Component({
   selector: 'app-root',
@@ -9,23 +9,24 @@ import { Pokemon } from 'pokenode-ts';
 })
 export class AppComponent {
   slots: Pokemon[] = [];
+  ready: boolean = false;
 
-  constructor(private pokemonQueryService: PokemonQueryService) {}
+  constructor(private pokemonService: PokemonService) {}
 
   ngOnInit() {
-    this.setPokemonDebug();
-  }
+    this.pokemonService.setupForQuery().subscribe({
+      next: (value) => {
+        this.ready = value;
+      },
+      error: () => {
+        throw new Error("Something went wrong on the API side");
+      }
+    });
 
-  setPokemonDebug() {
-    for (let amount = 1; amount < 7; amount++) {
-      this.pokemonQueryService.getPokemonByID(amount).subscribe({
-        next: (pokemon) => {
-          this.slots.push(pokemon);
-        },
-        error: () => {
-          throw new Error("Something happened while calling the PokemonQueryService!");
-        }
-      })
+    if (!this.ready) {
+      throw new Error("The service is not ready! This is very bad!");
+    } else {
+      console.log("Service is live and ready!");
     }
   }
 }

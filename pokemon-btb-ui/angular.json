@@ -27,7 +27,12 @@
             "inlineStyleLanguage": "sass",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/pokesprite-images/pokemon-gen8/regular",
+                "output": "./assets/pokemon-images"
+              }
             ],
             "styles": [
               "src/styles.sass"

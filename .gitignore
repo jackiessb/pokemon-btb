@@ -4,7 +4,7 @@
 /pokemon-btb-ui/.angular/cache
 
 # Compiled output
-/dist
+/pokemon-btb-ui/dist
 /tmp
 /out-tsc
 /bazel-out

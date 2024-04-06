@@ -5,11 +5,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TeamSlotComponent } from './team-slot/team-slot.component';
+import { SearchComponent } from './search/search.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TeamSlotComponent
+    TeamSlotComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,

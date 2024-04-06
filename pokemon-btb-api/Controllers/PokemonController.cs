@@ -3,6 +3,9 @@ using PokeApiNet;
 using pokemon_btb_api.Clients;
 
 namespace pokemon_btb_api.Controllers {
+    /*
+     * PokeApiNet will automatically cache calls it recognizes during each session
+     */
     [ApiController]
     public class PokemonController : ControllerBase {
         private readonly ILogger<PokemonController> logger;
@@ -17,9 +20,31 @@ namespace pokemon_btb_api.Controllers {
         [HttpGet]
         public Pokemon GetPokemonByID(int id)
         {
-            logger.LogInformation("PokemonAPI was called. Getting data for Pokemon with ID " + id);
+            logger.LogInformation("Getting data for Pokemon with ID " + id);
 
             var result = pokemonClient.GetPokemonByID(id);
+
+            return result.Result;
+        }
+
+        [Route("pokemon/getPokemonByQuery")]
+        [HttpGet]
+        public List<Pokemon> GetPokemonByQuery(string query)
+        {
+            logger.LogInformation("Getting data for Pokemon that contains string" + query);
+
+            var result = pokemonClient.GetPokemonByQuery(query);
+
+            return result.Result;
+        }
+
+        [Route("pokemon/setupForQuery")]
+        [HttpGet]
+        public bool SetupForQuery()
+        {
+            logger.LogInformation("Builder is live, getting us ready");
+
+            var result = pokemonClient.GetAllPossiblePokemon();
 
             return result.Result;
         }
