@@ -9,15 +9,16 @@ import { Pokemon } from 'pokenode-ts';
 export class SearchResultPageComponent {
   @Input() pokemon: Pokemon[] = [];
   @Input() page!: number;
-  @Output() finishedPopulate: EventEmitter<boolean> = new EventEmitter();
+  @Input() viewConstant!: number;
 
   pokemonToDisplay: Pokemon[] = [];
-  viewConstant: number = 14;
   rangeMin!: number;
   rangeMax!: number;
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['page'] && this.pokemon.length > 0) {
+    if (changes['page'] || changes['pokemon']) {
+      this.pokemonToDisplay = [];
+
       this.calculateRange();
       this.populatePokemon();
     }

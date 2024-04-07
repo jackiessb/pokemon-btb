@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Output, SimpleChanges, ViewChild }
 import { PokemonService } from '../services/pokemon.service';
 import { Pokemon } from 'pokenode-ts';
 import { SearchResultPageComponent } from '../search-result-page/search-result-page.component';
+import { Element } from '@angular/compiler';
 
 @Component({
   selector: 'app-search',
@@ -10,19 +11,18 @@ import { SearchResultPageComponent } from '../search-result-page/search-result-p
 })
 export class SearchComponent {
   @ViewChild('search') searchBar!: ElementRef<HTMLInputElement>;
-  @ViewChild(SearchResultPageComponent) searchPage!: ElementRef<HTMLCollection>;
 
   queryString!: string;
   pokemon: Pokemon[] = [];
   page!: number;
   pagesToShowSequence!: number[];  
-  viewConstant: number = 14;
+  viewConstant: number = 11; // How many Pokemon will be displayed each page.
   searchItemHeight: number = 63;
 
   constructor(private pokemonSearch: PokemonService) {}
 
   ngAfterViewInit() {
-    document.addEventListener("keyup", () => {    
+    this.searchBar.nativeElement.addEventListener("keyup", () => {    
       this.queryString = this.searchBar.nativeElement.value;
       this.query();
     });
@@ -37,33 +37,45 @@ export class SearchComponent {
 
   updatePage(page: number) {
     if (this.page == page) {
-      return
-    } else {
-      if (document.getElementsByTagName('app-search-result-page') != undefined) {
-        // If we arrive here, this means that elements exist on the page.
-        let entries = document.getElementsByClassName('pokemon-result');
-  
-        Array.from(entries).forEach(x => {
-          x.remove();
-        });
+      return;
+    } else {  
+      let currentEntries = this.getCurrentPageEntriesHTML();
+      if (currentEntries != undefined) {
+        this.removeCurrentPageEntries(currentEntries);
       }
-  
-      this.page = page; 
+
+      this.page = page;
     }
   }
 
-  catchFinishPopulate(finished: boolean) {
-    console.log(finished);
-  }
-
-  checkSearchPageEntries() {
-    if (this.searchPage.nativeElement == undefined) {
-      this.page = 1;
+  getCurrentPageEntriesHTML() {
+    if (document.getElementsByTagName('app-search-result-page') != undefined) {
+      // If we arrive here, this means that elements exist on the page.
+      return Array.from(document.getElementsByClassName('pokemon-result'));
     } else {
-      // We would want to cover a few cases here:
-      // - New entries show up from an API call
-      // - A search query is completely removed (ie--the search bar is blank)
+      return;
     }
+  }
+
+  checkSearchPageEntries(newEntries: Pokemon[]) {
+    let currentEntries = this.getCurrentPageEntriesHTML();
+
+    if (currentEntries != undefined) {
+      if (currentEntries.length == 0) {
+        this.page = 1;
+      }
+    }
+
+    if (this.pokemon.length != 0) {
+      // If newEntries contain duplicates, prune them 
+      // and add unique entries
+    }
+  }
+
+  removeCurrentPageEntries(entries: globalThis.Element[]) {
+    Array.from(entries).forEach(x => {
+      x.remove();
+    });
   }
 
   query() {
@@ -71,24 +83,29 @@ export class SearchComponent {
       || this.queryString.length < 2
     ) {
       // Return empty array on the case that there is no good query
+      let currentEntries = this.getCurrentPageEntriesHTML();
+      if (currentEntries != undefined) {
+        this.removeCurrentPageEntries(currentEntries);
+      }
+
       this.pokemon = new Array<Pokemon>();
+      return;
     } else {
       this.pokemonSearch.getPokemonByQuery(this.queryString).subscribe({
         next: (result) => {
           // Housekeeping
-          this.checkSearchPageEntries();
+          this.checkSearchPageEntries(result);
           this.pokemon = result;
 
           // Update page details when query is done
           this.updatePaginationSequence();
+
+          return;
         },
         error: (error: Error) => {
           throw new Error(error.message);
         }
       });
-
-      // Return empty array on the case that something breaks
-      this.pokemon = new Array<Pokemon>();
     }
   }
 }
