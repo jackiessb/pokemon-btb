@@ -4,8 +4,13 @@
         <button (click)="query()" class="search-button btn btn-secondary">Search</button>
     </div>
     <ul class="list-group">
-        <ng-template ngFor let-page [ngForOf]="pagesToShowSequence" let-i="index">
-            <app-search-result-page #searchPage [pokemon]="pokemon" [page]="page"></app-search-result-page>
-        </ng-template>
+        <app-search-result-page (finishedPopulate)="catchFinishPopulate($event)" #searchPage [pokemon]="pokemon" [page]="page"></app-search-result-page>
+        <nav>
+            <ul class="pagination">
+                <ng-template ngFor let-page [ngForOf]="pagesToShowSequence" let-i="index">
+                    <li class="page-item" (click)="updatePage(page)"><a class="page-link">{{page}}</a></li>
+                </ng-template>
+            </ul>
+        </nav>
     </ul>
 </div>

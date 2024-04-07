@@ -48,6 +48,10 @@ namespace pokemon_btb_api.Clients {
                 pokemonList.Add(result);
             }
 
+            // TO DO: Return sorted list of results. Results that contain the first part
+            // of a substring should appear first in the list, in descending order of
+            // substring start position. (IE--Bulbasaur, then Abuela, etc)
+
             return pokemonList;
         }
 

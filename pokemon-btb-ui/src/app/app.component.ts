@@ -19,6 +19,7 @@ export class AppComponent {
         this.ready = value;
       },
       error: () => {
+        this.ready = false;
         throw new Error("Something went wrong on the API side");
       }
     });

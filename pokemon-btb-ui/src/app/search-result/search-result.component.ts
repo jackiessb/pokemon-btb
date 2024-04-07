@@ -8,4 +8,9 @@ import { Pokemon } from 'pokenode-ts';
 })
 export class SearchResultComponent {
   @Input() pokemon!: Pokemon;
+  pokemonArtFile!: string;
+
+  ngOnInit() {
+    this.pokemonArtFile = "/assets/pokemon-images/" + this.pokemon.name + ".png";
+  }
 }

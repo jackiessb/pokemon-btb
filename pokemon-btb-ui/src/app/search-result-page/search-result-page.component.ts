@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
 import { Pokemon } from 'pokenode-ts';
 
 @Component({
@@ -9,32 +9,38 @@ import { Pokemon } from 'pokenode-ts';
 export class SearchResultPageComponent {
   @Input() pokemon: Pokemon[] = [];
   @Input() page!: number;
+  @Output() finishedPopulate: EventEmitter<boolean> = new EventEmitter();
 
-  viewConstant: number = 14;
   pokemonToDisplay: Pokemon[] = [];
+  viewConstant: number = 14;
+  rangeMin!: number;
+  rangeMax!: number;
 
-  ngAfterViewInit() {
-    this.calculateRangeAndPokemon();
-
-    console.log(this.pokemonToDisplay);
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['page'] && this.pokemon.length > 0) {
+      this.calculateRange();
+      this.populatePokemon();
+    }
   }
 
-  calculateRangeAndPokemon() {
-    let rangeMax = this.page * this.viewConstant;
-    let rangeMin = rangeMax - this.viewConstant;
+  calculateRange() {
+    this.rangeMax = this.page * this.viewConstant;
+    this.rangeMin = this.rangeMax - this.viewConstant;
 
-    if (rangeMax > this.pokemon.length) {
-      rangeMax = this.pokemon.length;
+    if (this.rangeMax > this.pokemon.length) {
+      this.rangeMax = this.pokemon.length;
     }
+  }
 
-    while (rangeMin < rangeMax) {
-      let mon = this.pokemon.at(rangeMin);
+  populatePokemon() {
+    while (this.rangeMin < this.rangeMax) {
+      let mon = this.pokemon.at(this.rangeMin);
 
       if (mon != undefined) {
         this.pokemonToDisplay.push(mon);
       }
 
-      rangeMin++;
+      this.rangeMin++;
     }
   }
 }
