@@ -1,3 +1,11 @@
-<div class="search">
-    <input #search id="pokemon-query" type="search" class="pokemon-query form-control form-control-lg" placeholder="Search for a Pokemon here!">
+<div #searchPanel class="search">
+    <div class="flex search-subarea">
+        <input #search id="pokemon-query" type="search" class="pokemon-query form-control form-control-lg" placeholder="Search for a Pokemon here!">
+        <button (click)="query()" class="search-button btn btn-secondary">Search</button>
+    </div>
+    <ul class="list-group">
+        <ng-template ngFor let-page [ngForOf]="pagesToShowSequence" let-i="index">
+            <app-search-result-page #searchPage [pokemon]="pokemon" [page]="page"></app-search-result-page>
+        </ng-template>
+    </ul>
 </div>

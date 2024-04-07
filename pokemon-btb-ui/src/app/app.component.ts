@@ -9,11 +9,11 @@ import { PokemonService } from './services/pokemon.service';
 })
 export class AppComponent {
   slots: Pokemon[] = [];
-  ready: boolean = false;
+  ready: boolean = true;
 
   constructor(private pokemonService: PokemonService) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.pokemonService.setupForQuery().subscribe({
       next: (value) => {
         this.ready = value;
@@ -25,8 +25,6 @@ export class AppComponent {
 
     if (!this.ready) {
       throw new Error("The service is not ready! This is very bad!");
-    } else {
-      console.log("Service is live and ready!");
     }
   }
 }

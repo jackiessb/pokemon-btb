@@ -39,7 +39,12 @@ namespace pokemon_btb_api.Clients {
 
             foreach (var item in toGet)
             {
+                // no task list
                 Pokemon result = await pokemonClient.GetResourceAsync<Pokemon>(item);
+
+                logger.LogInformation("Pokemon " + result.Name + " recieved, " +
+                    "Item " + toGet.IndexOf(item) + " Out of " + (toGet.Count + 1));
+
                 pokemonList.Add(result);
             }
 

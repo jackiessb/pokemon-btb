@@ -6,12 +6,16 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { TeamSlotComponent } from './team-slot/team-slot.component';
 import { SearchComponent } from './search/search.component';
+import { SearchResultComponent } from './search-result/search-result.component';
+import { SearchResultPageComponent } from './search-result-page/search-result-page.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TeamSlotComponent,
-    SearchComponent
+    SearchComponent,
+    SearchResultComponent,
+    SearchResultPageComponent
   ],
   imports: [
     BrowserModule,

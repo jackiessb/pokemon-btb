@@ -23,7 +23,7 @@ export class PokemonService {
   getPokemonByQuery(query: string) {
     return this.http.get<Array<Pokemon>>("https://localhost:7077/pokemon/getPokemonByQuery/", {
       headers: this.headers,
-      params: this.parameters.append('name', query)
+      params: this.parameters.append('query', query)
     });
   }
 
