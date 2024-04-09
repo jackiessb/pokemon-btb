@@ -1,6 +1,6 @@
-<li #result class="pokemon-result list-group-item">
-    <span class="pokemon-art">
-        <img src="{{pokemonArtFile}}">
-    </span>
-    {{pokemon.name}}
+<li class="pokemon-result list-group-item">
+    <div class="flex pokemon-result-container">
+        <img class="pokemon-art" src="{{pokemonArtFile}}" onerror="this.src='/assets/pokemon-images/unown.png';">
+        <span class="pokemon-name">{{pokemonNameDisplay}}</span>
+    </div>
 </li>

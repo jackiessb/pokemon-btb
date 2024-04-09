@@ -8,6 +8,8 @@ import { TeamSlotComponent } from './team-slot/team-slot.component';
 import { SearchComponent } from './search/search.component';
 import { SearchResultComponent } from './search-result/search-result.component';
 import { SearchResultPageComponent } from './search-result-page/search-result-page.component';
+import { InitNavDirective } from './directives/init-nav.directive';
+import { TeamComponent } from './team/team.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { SearchResultPageComponent } from './search-result-page/search-result-pa
     TeamSlotComponent,
     SearchComponent,
     SearchResultComponent,
-    SearchResultPageComponent
+    SearchResultPageComponent,
+    InitNavDirective,
+    TeamComponent,
   ],
   imports: [
     BrowserModule,

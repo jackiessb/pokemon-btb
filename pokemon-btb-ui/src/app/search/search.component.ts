@@ -1,8 +1,6 @@
-import { Component, ElementRef, EventEmitter, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { PokemonService } from '../services/pokemon.service';
 import { Pokemon } from 'pokenode-ts';
-import { SearchResultPageComponent } from '../search-result-page/search-result-page.component';
-import { Element } from '@angular/compiler';
 
 @Component({
   selector: 'app-search',
@@ -11,10 +9,15 @@ import { Element } from '@angular/compiler';
 })
 export class SearchComponent {
   @ViewChild('search') searchBar!: ElementRef<HTMLInputElement>;
-
+  @Output() clickedForTeam: EventEmitter<Pokemon> = new EventEmitter<Pokemon>();
+  
   queryString!: string;
-  pokemon: Pokemon[] = [];
+  queryStringLimit: number = 2; // This is mainly for dev purposes.
   page!: number;
+  preivousPage!: number;
+  isLoading: boolean = false;
+
+  pokemon: Pokemon[] = [];
   pagesToShowSequence!: number[];  
   viewConstant: number = 11; // How many Pokemon will be displayed each page.
   searchItemHeight: number = 63;
@@ -31,6 +34,10 @@ export class SearchComponent {
   updatePaginationSequence() {
     let pagesToShow = Math.ceil(this.pokemon.length / this.viewConstant);
 
+    if (pagesToShow > 12) {
+      pagesToShow = 12; // The greatest we will show at a time is 12.
+    }
+
     // Add one so that the numbers are shown like normal.
     this.pagesToShowSequence = Array.from(Array(pagesToShow).keys()).map(x => x = x + 1);
   }
@@ -38,37 +45,47 @@ export class SearchComponent {
   updatePage(page: number) {
     if (this.page == page) {
       return;
-    } else {  
+    } else {
+      this.preivousPage = this.page;
+
       let currentEntries = this.getCurrentPageEntriesHTML();
       if (currentEntries != undefined) {
         this.removeCurrentPageEntries(currentEntries);
       }
 
       this.page = page;
+
+      this.updatePageNavButton();
+    }
+  }
+  
+  updatePageNavButton() {
+    let previousPage = 'page' + this.preivousPage;
+    let pageToFind = 'page' + this.page;
+    let pageNavButton = document.getElementById(pageToFind);
+    let prevPageNavButton = document.getElementById(previousPage);
+
+    if (pageNavButton != undefined && prevPageNavButton != undefined) {
+      pageNavButton.className += "page-item active";
+      prevPageNavButton.className = "page-item"
     }
   }
 
   getCurrentPageEntriesHTML() {
     if (document.getElementsByTagName('app-search-result-page') != undefined) {
-      // If we arrive here, this means that elements exist on the page.
       return Array.from(document.getElementsByClassName('pokemon-result'));
     } else {
       return;
     }
   }
 
-  checkSearchPageEntries(newEntries: Pokemon[]) {
+  checkSearchPageEntries() {
     let currentEntries = this.getCurrentPageEntriesHTML();
 
     if (currentEntries != undefined) {
       if (currentEntries.length == 0) {
         this.page = 1;
       }
-    }
-
-    if (this.pokemon.length != 0) {
-      // If newEntries contain duplicates, prune them 
-      // and add unique entries
     }
   }
 
@@ -78,31 +95,39 @@ export class SearchComponent {
     });
   }
 
+  clickedForTeamCall(pokemon: Pokemon) {
+    this.clickedForTeam.emit(pokemon);
+  }
+
   query() {
+    this.isLoading = true;
+
     if (this.queryString == "Search for a Pokemon here!" || this.queryString == ""
-      || this.queryString.length < 2
+      || this.queryString.length < this.queryStringLimit
     ) {
-      // Return empty array on the case that there is no good query
+
       let currentEntries = this.getCurrentPageEntriesHTML();
       if (currentEntries != undefined) {
         this.removeCurrentPageEntries(currentEntries);
       }
 
       this.pokemon = new Array<Pokemon>();
+      this.isLoading = false;
+
       return;
     } else {
       this.pokemonSearch.getPokemonByQuery(this.queryString).subscribe({
         next: (result) => {
-          // Housekeeping
-          this.checkSearchPageEntries(result);
+          this.isLoading = false;
+          this.checkSearchPageEntries();
           this.pokemon = result;
 
-          // Update page details when query is done
           this.updatePaginationSequence();
 
           return;
         },
         error: (error: Error) => {
+          this.isLoading = false;
           throw new Error(error.message);
         }
       });

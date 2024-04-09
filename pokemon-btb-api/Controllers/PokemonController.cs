@@ -31,7 +31,7 @@ namespace pokemon_btb_api.Controllers {
         [HttpGet]
         public List<Pokemon> GetPokemonByQuery(string query)
         {
-            logger.LogInformation("Getting data for Pokemon that contains string" + query);
+            logger.LogInformation("Getting data for Pokemon that contains string " + query);
 
             var result = pokemonClient.GetPokemonByQuery(query);
 

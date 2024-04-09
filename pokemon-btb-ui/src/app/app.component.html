@@ -1,16 +1,7 @@
 <ng-template [ngIf]="ready">
   <div class="flex main-display">
-    <ul class="list-group">
-      <ng-template [ngIf]="slots.length == 0">
-        <li class="list-group-item initial-message">
-          When you add Pokemon to your team, they will go here.
-        </li>
-      </ng-template>
-      <ng-template [ngIf]="slots.length > 0">
-        <app-team-slot *ngFor="let slot of slots" [pokemon]="slot"></app-team-slot>
-      </ng-template>
-    </ul>
-    <app-search></app-search>
+    <app-team></app-team>
+    <app-search (clickedForTeam)="setTeamMemberSelection($event)"></app-search>
   </div>
 </ng-template>
 <ng-template [ngIf]="!ready">

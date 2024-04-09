@@ -1,18 +1,23 @@
-<div #searchPanel class="search">
+<div class="flex search">
     <div class="flex search-subarea">
         <input #search id="pokemon-query" type="search" class="pokemon-query form-control form-control-lg" placeholder="Search for a Pokemon here!">
-        <button (click)="query()" class="search-button btn btn-secondary">Search</button>
+        <ng-template [ngIf]="isLoading">
+            <button class="search-button-loading btn btn-secondary">Loading...</button>
+        </ng-template>
+        <ng-template [ngIf]="!isLoading">
+            <button (click)="query()" class="search-button btn btn-secondary">Search</button>
+        </ng-template>
+    </div>
+    <div class="pagination-center">
+        <ul class="pagination">
+            <ng-template [ngIf]="pokemon.length != 0">
+                <ng-template ngFor let-page [ngForOf]="pagesToShowSequence" let-i="index">
+                    <li appInitNav [attr.id]="'page' + page" class="page-item" (click)="updatePage(page)"><a class="page-link">{{page}}</a></li>
+                </ng-template>
+            </ng-template>
+        </ul>
     </div>
     <ul class="list-group">
-        <app-search-result-page #searchPage [pokemon]="pokemon" [page]="page" [viewConstant]="viewConstant"></app-search-result-page>
-        <nav>
-            <ul class="pagination">
-                <ng-template [ngIf]="pokemon.length != 0">
-                    <ng-template ngFor let-page [ngForOf]="pagesToShowSequence" let-i="index">
-                        <li class="page-item" (click)="updatePage(page)"><a class="page-link">{{page}}</a></li>
-                    </ng-template>
-                </ng-template>
-            </ul>
-        </nav>
+        <app-search-result-page (clickedForTeam)="clickedForTeamCall($event)" [pokemon]="pokemon" [page]="page" [viewConstant]="viewConstant"></app-search-result-page>
     </ul>
 </div>

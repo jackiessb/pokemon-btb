@@ -8,7 +8,7 @@ import { PokemonService } from './services/pokemon.service';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent {
-  slots: Pokemon[] = [];
+  teamMemberSelection!: Pokemon;
   ready: boolean = true;
 
   constructor(private pokemonService: PokemonService) {}
@@ -27,5 +27,9 @@ export class AppComponent {
     if (!this.ready) {
       throw new Error("The service is not ready! This is very bad!");
     }
+  }
+
+  setTeamMemberSelection(pokemon: Pokemon) {
+    this.teamMemberSelection = pokemon;
   }
 }

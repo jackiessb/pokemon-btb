@@ -1,5 +1,6 @@
-import { Component, ElementRef, EventEmitter, Input, Output, SimpleChange, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
 import { Pokemon } from 'pokenode-ts';
+import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'app-search-result-page',
@@ -10,7 +11,9 @@ export class SearchResultPageComponent {
   @Input() pokemon: Pokemon[] = [];
   @Input() page!: number;
   @Input() viewConstant!: number;
+  @Output() clickedForTeam: EventEmitter<Pokemon> = new EventEmitter<Pokemon>();
 
+  searchCompRef!: SearchComponent;
   pokemonToDisplay: Pokemon[] = [];
   rangeMin!: number;
   rangeMax!: number;
@@ -31,6 +34,10 @@ export class SearchResultPageComponent {
     if (this.rangeMax > this.pokemon.length) {
       this.rangeMax = this.pokemon.length;
     }
+  }
+
+  clickedForTeamCall(pokemon: Pokemon) {
+    this.clickedForTeam.emit(pokemon);
   }
 
   populatePokemon() {
